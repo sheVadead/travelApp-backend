@@ -12,12 +12,9 @@ mongoose.connect(
     console.log("Connected to db");
   }
 );
-const db = mongoose.connection;
 
-const postsRoute = require("./routes/posts");
 const getRoute = require("./routes/get");
 
-app.use(bodyParser.json());
 app.use("/countries", getRoute);
 //Routes
 app.get("/", (req, res) => {
