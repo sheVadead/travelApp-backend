@@ -5,13 +5,6 @@ let bcrypt = require("bcryptjs");
 const { photoUpload } = require("../middlewares/avatarUpload");
 
 exports.signup = async (req, res, c) => {
-  // console.log(res.secure_url);
-  // console.log(res);
-  // console.log('controleler', req, res, c);
-  // console.log('body', req.body);
-  // console.log(uploadPhoto)
-
-  console.log(photoUpload);
 
   if (req.body.password && req.body.password.length < 6) {
     res.status(500).send({
@@ -22,20 +15,13 @@ exports.signup = async (req, res, c) => {
 
   const photoData = await photoUpload(req.body.avatar);
 
-  console.log("before save", photoData);
-
   const user = new User({
     login: req.body.login,
     password: bcrypt.hashSync(req.body.password, 8),
     avatar: photoData,
   });
 
-  console.log("before before save");
-
   user.save((err, user) => {
-    console.log(err, user);
-    // return;
-
     if (err) {
       res.status(500).send({
         message: err,
