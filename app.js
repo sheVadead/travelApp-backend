@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const Country = require("./models/Countries");
+const cloudinary = require("cloudinary").v2;
+
 require("dotenv/config");
 mongoose.connect(
   process.env.DB_CONNECTION,
@@ -13,14 +14,16 @@ mongoose.connect(
   }
 );
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 const getRoute = require("./routes/get");
 app.use(cors());
 app.options("*", cors());
 app.use("/countries", getRoute);
 
-//Routes
 app.get("/", (req, res) => {
   res.send("We are on home");
 });
-
+require("./routes/auth.routes")(app);
+require("./routes/user.routes")(app);
 app.listen(process.env.PORT || 3000);
