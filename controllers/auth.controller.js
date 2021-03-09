@@ -1,26 +1,51 @@
 const config = require("../config/auth.config");
 const User = require("../models/User");
-
 let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
+const { photoUpload } = require("../middlewares/avatarUpload");
 
-exports.signup = (req, res) => {
-  if (req.body.password.length < 6) {
-    res.status(500).send({ message: "Invalid password length" });
+exports.signup = async (req, res, c) => {
+  // console.log(res.secure_url);
+  // console.log(res);
+  // console.log('controleler', req, res, c);
+  // console.log('body', req.body);
+  // console.log(uploadPhoto)
+
+  console.log(photoUpload);
+
+  if (req.body.password && req.body.password.length < 6) {
+    res.status(500).send({
+      message: "Invalid password length",
+    });
     return;
   }
+
+  const photoData = await photoUpload(req.body.avatar);
+
+  console.log("before save", photoData);
+
   const user = new User({
     login: req.body.login,
     password: bcrypt.hashSync(req.body.password, 8),
+    avatar: photoData,
   });
+
+  console.log("before before save");
+
   user.save((err, user) => {
+    console.log(err, user);
+    // return;
+
     if (err) {
-      res.status(500).send({ message: err });
+      res.status(500).send({
+        message: err,
+      });
       return;
     }
-    console.log(user.password);
 
-    res.send({ message: "User was registered successfully!" });
+    res.send({
+      message: "User was registered successfully!",
+    });
   });
 };
 
@@ -31,12 +56,16 @@ exports.signin = (req, res) => {
     .populate("roles", "-__v")
     .exec((err, user) => {
       if (err) {
-        res.status(500).send({ message: err });
+        res.status(500).send({
+          message: err,
+        });
         return;
       }
 
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(404).send({
+          message: "User Not found.",
+        });
       }
 
       let passwordIsValid = bcrypt.compareSync(
@@ -51,14 +80,20 @@ exports.signin = (req, res) => {
         });
       }
 
-      let token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 86400, // 24 hours
-      });
+      let token = jwt.sign(
+        {
+          id: user.id,
+        },
+        config.secret,
+        {
+          expiresIn: 86400, // 24 hours
+        }
+      );
 
       res.status(200).send({
         id: user._id,
         username: user.username,
-        email: user.email,
+        avatar: user.avatar,
         accessToken: token,
       });
     });

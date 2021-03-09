@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const cloudinary = require("cloudinary").v2;
 
 require("dotenv/config");
 mongoose.connect(
@@ -24,6 +23,7 @@ app.use("/countries", getRoute);
 app.get("/", (req, res) => {
   res.send("We are on home");
 });
+
 require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
 app.listen(process.env.PORT || 3000);
