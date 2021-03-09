@@ -4,8 +4,7 @@ let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
 const { photoUpload } = require("../middlewares/avatarUpload");
 
-exports.signup = async (req, res, c) => {
-
+exports.signup = async (req, res) => {
   if (req.body.password && req.body.password.length < 6) {
     res.status(500).send({
       message: "Invalid password length",
@@ -14,7 +13,6 @@ exports.signup = async (req, res, c) => {
   }
 
   const photoData = await photoUpload(req.body.avatar);
-
   const user = new User({
     login: req.body.login,
     password: bcrypt.hashSync(req.body.password, 8),

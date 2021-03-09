@@ -14,12 +14,11 @@ const loader = multer({
 
 exports.photoUpload = async (filePath) => {
   try {
-     await cloudinary.uploader.upload(filePath);
-     const url = await cloudinary.url("nrtgb5yglht8lgwpcmsn.jpg", {
-        width: 90,
-        height: 130,
-      })
-
+    const result = await cloudinary.uploader.upload(filePath);
+    const url = cloudinary.url(`${result.public_id}.jpg`, {
+      width: 100,
+      height: 100,
+    });
     return url;
   } catch (error) {
     return {};
