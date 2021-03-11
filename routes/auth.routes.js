@@ -11,8 +11,6 @@ module.exports = function (app) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
       "Access-Control-Allow-Headers",
-
-      " Access-Control-Allow-Methods",
       "x-access-token, Origin, Content-Type, Accept"
     );
     next();
