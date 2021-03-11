@@ -12,12 +12,13 @@ mongoose.connect(
     console.log("Connected to db");
   }
 );
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-
-const getRoute = require("./routes/get");
 app.use(cors());
 app.options("*", cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const getRoute = require("./routes/get");
+
 app.use("/countries", getRoute);
 
 app.get("/", (req, res) => {
