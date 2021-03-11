@@ -1,5 +1,4 @@
 const cloudinary = require("cloudinary").v2;
-const multer = require("multer");
 const path = require("path");
 const fs = require("fs/promises");
 cloudinary.config({
@@ -8,20 +7,15 @@ cloudinary.config({
   api_secret: "OgGKzWVQA1l_HTp-yNOOkKAOv-k",
 });
 
-const loader = multer({
-  dest: path.join(__dirname, "tmp"),
-});
-
 exports.photoUpload = async (filePath) => {
   try {
-    const result = await cloudinary.uploader.upload(filePath);
-    const url = cloudinary.url(`${result.public_id}.jpg`, {
-      width: 100,
-      height: 100,
+    const result = await cloudinary.uploader.upload(filePath, {
+      upload_preset: "avatarPreset",
     });
-    return url;
+    fs.unlink(filePath);
+    return result;
   } catch (error) {
-    return {};
+    console.log(error);
   }
-  //   fs.unlink(req.file.path);
+  
 };

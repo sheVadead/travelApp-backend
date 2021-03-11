@@ -7,16 +7,16 @@ const { photoUpload } = require("../middlewares/avatarUpload");
 exports.signup = async (req, res) => {
   if (req.body.password && req.body.password.length < 6) {
     res.status(500).send({
-      message: "Invalid password length",
+      message: "Invalid password",
     });
     return;
   }
-
-  const photoData = await photoUpload(req.body.avatar);
+  const photoData = await photoUpload(req.file.path);
   const user = new User({
     login: req.body.login,
     password: bcrypt.hashSync(req.body.password, 8),
-    avatar: photoData,
+    name: req.body.name,
+    avatar: photoData.secure_url,
   });
 
   user.save((err, user) => {
