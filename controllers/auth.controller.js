@@ -34,51 +34,47 @@ exports.signup = async (req, res) => {
 };
 
 exports.signin = (req, res) => {
+  console.log(req.body.login);
   User.findOne({
     login: req.body.login,
-  })
-    .populate("roles", "-__v")
-    .exec((err, user) => {
-      if (err) {
-        res.status(500).send({
-          message: err,
-        });
-        return;
-      }
-
-      if (!user) {
-        return res.status(404).send({
-          message: "User Not found.",
-        });
-      }
-
-      let passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
-
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!",
-        });
-      }
-
-      let token = jwt.sign(
-        {
-          id: user.id,
-        },
-        config.secret,
-        {
-          expiresIn: 86400, // 24 hours
-        }
-      );
-
-      res.status(200).send({
-        id: user._id,
-        username: user.username,
-        avatar: user.avatar,
-        accessToken: token,
+  }).exec((err, user) => {
+    if (err) {
+      res.status(500).send({
+        message: err,
       });
+      return;
+    }
+
+    if (!user) {
+      return res.status(404).send({
+        message: "User Not found.",
+      });
+    }
+
+    let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+
+    if (!passwordIsValid) {
+      return res.status(401).send({
+        accessToken: null,
+        message: "Invalid Password!",
+      });
+    }
+
+    let token = jwt.sign(
+      {
+        id: user.id,
+      },
+      config.secret,
+      {
+        expiresIn: 86400, // 24 hours
+      }
+    );
+
+    res.status(200).send({
+      id: user._id,
+      username: user.username,
+      avatar: user.avatar,
+      accessToken: token,
     });
+  });
 };
