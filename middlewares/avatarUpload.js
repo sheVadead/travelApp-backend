@@ -9,13 +9,21 @@ cloudinary.config({
 
 exports.photoUpload = async (filePath) => {
   try {
-    const result = await cloudinary.uploader.upload(filePath, {
-      upload_preset: "avatarPreset",
-    });
-    fs.unlink(filePath);
-    return result;
+    if (!filePath) {
+      const result = {
+        secure_url:
+          "https://res.cloudinary.com/shevadead/image/upload/v1615655895/avatars/wobrunpttta77b62vg9l.png",
+      };
+      fs.unlink(filePath);
+      return result;
+    } else {
+      const result = await cloudinary.uploader.upload(filePath, {
+        upload_preset: "avatarPreset",
+      });
+      fs.unlink(filePath);
+      return result;
+    }
   } catch (error) {
     console.log(error);
   }
-  
 };

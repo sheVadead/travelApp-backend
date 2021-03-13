@@ -11,7 +11,8 @@ exports.signup = async (req, res) => {
     });
     return;
   }
-  const photoData = await photoUpload(req.file.path);
+  const avatarFile = req.file ? req.file.path : undefined;
+  const photoData = await photoUpload(avatarFile);
   const user = new User({
     login: req.body.login,
     password: bcrypt.hashSync(req.body.password, 8),
@@ -26,6 +27,15 @@ exports.signup = async (req, res) => {
       });
       return;
     }
+    let token = jwt.sign(
+      {
+        id: req.body.login,
+      },
+      config.secret,
+      {
+        expiresIn: 86400, // 24 hours
+      }
+    );
 
     res.send({
       message: "User was registered successfully!",
@@ -34,7 +44,6 @@ exports.signup = async (req, res) => {
 };
 
 exports.signin = (req, res) => {
-  console.log(req.body);
   User.findOne({
     login: req.body.login,
   }).exec((err, user) => {
@@ -62,7 +71,7 @@ exports.signin = (req, res) => {
 
     let token = jwt.sign(
       {
-        id: user.id,
+        id: user.login,
       },
       config.secret,
       {
