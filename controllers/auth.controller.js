@@ -34,7 +34,7 @@ exports.signup = async (req, res) => {
 };
 
 exports.signin = (req, res) => {
-  console.log(req.body.login);
+  console.log(req.body);
   User.findOne({
     login: req.body.login,
   }).exec((err, user) => {
@@ -69,11 +69,10 @@ exports.signin = (req, res) => {
         expiresIn: 86400, // 24 hours
       }
     );
-
     res.status(200).send({
-      id: user._id,
-      username: user.username,
+      username: user.login,
       avatar: user.avatar,
+      name: user.name,
       accessToken: token,
     });
   });
