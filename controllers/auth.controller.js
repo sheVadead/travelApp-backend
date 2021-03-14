@@ -86,3 +86,19 @@ exports.signin = (req, res) => {
     });
   });
 };
+
+exports.setNewAvatar = async (req, res) => {
+  const avatarFile = req.file ? req.file.path : undefined;
+  const photoData = await photoUpload(avatarFile);
+  const user = User.findOneAndUpdate(
+    { login: req.body.login },
+    { avatar: photoData.secure_url },
+    function (err, result) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+};

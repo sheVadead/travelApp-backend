@@ -24,4 +24,6 @@ module.exports = function (app) {
   );
 
   app.post("/api/auth/signin", loader.single("avatar"), controller.signin);
+
+  app.post("/api/user/change-avatar", loader.single("avatar"), controller.setNewAvatar);
 };

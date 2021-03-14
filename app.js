@@ -12,14 +12,18 @@ mongoose.connect(
     console.log("Connected to db");
   }
 );
+mongoose.set("useFindAndModify", false);
 app.use(cors());
 // app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const getRoute = require("./routes/get");
+const getRouteCountries = require("./routes/getCountries");
+const getRoutUsers = require("./routes/getUsers");
 
-app.use("/countries", getRoute);
+app.use("/countries", getRouteCountries);
+
+app.use("/users", getRoutUsers);
 
 app.get("/", (req, res) => {
   res.send("We are on home");
