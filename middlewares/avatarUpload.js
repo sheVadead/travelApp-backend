@@ -12,7 +12,7 @@ exports.photoUpload = async (filePath) => {
     if (!filePath) {
       const result = {
         secure_url:
-          "https://res.cloudinary.com/shevadead/image/upload/v1615655895/avatars/wobrunpttta77b62vg9l.png",
+          "https://res.cloudinary.com/shevadead/image/upload/v1615793274/avatars/hiker_nmr7br.svg",
       };
       fs.unlink(filePath);
       return result;
